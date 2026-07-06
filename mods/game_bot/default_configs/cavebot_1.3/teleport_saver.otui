@@ -1,0 +1,69 @@
+SavedTeleportEntry < Panel
+  height: 36
+  margin-top: 2
+
+  UICreature
+    id: creature
+    phantom: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    size: 32 32
+    image-source: /images/ui/panel_flat
+    image-border: 1
+
+  Label
+    id: name
+    anchors.left: prev.right
+    anchors.top: parent.top
+    anchors.right: prev.right
+    margin-left: 6
+    text-auto-resize: true
+    text-wrap: true
+    height: 16
+
+  Label
+    id: coords
+    anchors.left: prev.left
+    anchors.top: prev.bottom
+    font: verdana-11px-rounded
+    color: #aaaaaa
+    text-auto-resize: true
+    height: 14
+
+  BotButton
+    id: go
+    !text: tr('Go')
+    anchors.top: parent.top
+    anchors.right: parent.right
+    width: 40
+    height: 17
+    margin-top: 0
+
+  BotButton
+    id: remove
+    !text: tr('X')
+    anchors.top: prev.bottom
+    anchors.right: parent.right
+    width: 40
+    height: 17
+    margin-top: 2
+    image-color: #cc4444
+
+SavedTeleportListPanel < Panel
+  height: 150
+  margin-top: 2
+
+  ScrollablePanel
+    id: list
+    anchors.fill: parent
+    margin-right: 14
+    vertical-scrollbar: listScroll
+    layout:
+      type: verticalBox
+      fit-children: true
+
+  BotSmallScrollBar
+    id: listScroll
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right

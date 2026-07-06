@@ -39,22 +39,23 @@ UI.Button("Zoom Out map [ctrl + -]", function() zoomOut() end)
 
 UI.Separator()
 
-local moneyIds = {3031, 3035} -- gold coin, platinium coin
-macro(1000, "Exchange money", function()
-  local containers = g_game.getContainers()
-  for index, container in pairs(containers) do
-    if not container.lootContainer then -- ignore monster containers
-      for i, item in ipairs(container:getItems()) do
-        if item:getCount() == 100 then
-          for m, moneyId in ipairs(moneyIds) do
-            if item:getId() == moneyId then
-              return g_game.use(item)
+local moneyIds = {3031, 3035}
+
+macro(500, "Exchange Money", function()
+    for _, container in pairs(g_game.getContainers()) do
+        if not container.lootContainer then
+            for _, item in ipairs(container:getItems()) do
+                if item:getCount() == 100 then
+                    for _, id in ipairs(moneyIds) do
+                        if item:getId() == id then
+                            g_game.useWith(item, player)
+                            return
+                        end
+                    end
+                end
             end
-          end
         end
-      end
     end
-  end
 end)
 
 macro(1000, "Stack items", function()
