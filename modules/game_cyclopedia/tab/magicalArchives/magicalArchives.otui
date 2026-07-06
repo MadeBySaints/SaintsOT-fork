@@ -2,50 +2,174 @@ UIWidget
   id: Cat5
   anchors.fill: parent
   visible: false
-  UIWidget
+
+  # Left Panel
+  Panel
     id: InformationBase
     anchors.top: parent.top
     anchors.left: parent.left
     anchors.bottom: parent.bottom
-    margin-bottom: 8
+    width: 290
     margin-top: 10
-    width: 180
-    MiniPanel
-      id: selectSpell
-      anchors.fill: parent
-      image-border: 10
-      padding-right: 16
-      margin-bottom: 25
+    margin-left: 10
+    background-color: #1e1e1e
+    border-width: 1
+    border-color: #3a3a3a
+
+    Label
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin: 8
       !text: tr('Select Spell')
-      layout:
-        type: verticalBox
-        spacing: 6
+      font: Verdana Bold-11px
+      color: #c0c0c0
 
-      ComboBox
-      TextListQuestLog
-        height: 330
-      TextEditQuestLog
+    ComboBox
+      id: VocationFilter
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 35
+      margin-left: 8
+      margin-right: 8
+      height: 22
 
-  MiniPanel
+    ComboBox
+      id: GroupFilter
+      anchors.top: VocationFilter.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+      margin-left: 8
+      margin-right: 8
+      height: 22
+
+    TextEdit
+      id: SearchEdit
+      anchors.top: GroupFilter.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+      margin-left: 8
+      margin-right: 8
+      height: 22
+      !placeholder: tr('Type to search...')
+
+    Panel
+      id: SpellListBase
+      anchors.top: SearchEdit.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 8
+      margin-left: 8
+      margin-right: 8
+      margin-bottom: 8
+      background-color: #181818
+      border-width: 1
+      border-color-bottom: #747575
+      border-color-right: #747575
+      border-color-top: #141414
+
+      UIScrollArea
+        id: SpellList
+        anchors.fill: parent
+        margin-right: 12
+        layout:
+          type: verticalBox
+          spacing: 2
+        vertical-scrollbar: SpellScrollbar
+
+      VerticalScrollBar
+        id: SpellScrollbar
+        anchors.top: SpellList.top
+        anchors.right: parent.right
+        anchors.bottom: SpellList.bottom
+        step: 28
+        pixels-scroll: true
+
+  # Right Panel - Better spacing
+  Panel
     id: spellAndRune
-    text: Spell / Rune Information
-    anchors.top: InformationBase.top
+    anchors.top: parent.top
     anchors.left: InformationBase.right
     anchors.right: parent.right
-    anchors.bottom: InformationBase.bottom
+    anchors.bottom: parent.bottom
+    margin-top: 10
     margin-left: 10
-    margin-bottom: 25
+    margin-right: 10
+    background-color: #1e1e1e
+    border-width: 1
+    border-color: #3a3a3a
 
-    Label
-      anchors.centerIn: parent
-      text: select a spell to view detailed information. 
-    Label
-      id: deleteme
-      anchors.centerIn: parent
-      !text: tr("\nis this in the protobuf ?\n in http post ? \nor modify gamelib/spells.lua?")
-      font-scale: 2
-      margin-top: 32
-      text-auto-resize: true
+    UIWidget
+      id: SpellIcon
+      size: 64 64
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin: 25
+      image-source: /images/game/spells/spell-icons-32x32
+      image-smooth: true
 
+    UILabel
+      id: SpellName
+      anchors.top: SpellIcon.top
+      anchors.left: SpellIcon.right
+      anchors.right: parent.right
+      margin-left: 20
+      margin-top: 10
+      margin-right: 25
+      font: Verdana Bold-11px
+      color: #ffd700
+      text-wrap: true
 
+    UILabel
+      id: Formula
+      anchors.top: SpellName.bottom
+      anchors.left: SpellName.left
+      anchors.right: parent.right
+      margin-top: 12
+      margin-right: 25
+      font: Verdana Bold-11px
+      color: #ffffff
+      text-wrap: true
 
+    UILabel
+      id: LevelInfo
+      anchors.top: Formula.bottom
+      anchors.left: SpellName.left
+      anchors.right: parent.right
+      margin-top: 12
+      margin-right: 25
+      font: Verdana Bold-11px
+      color: #c0c0c0
+
+    UILabel
+      id: ManaInfo
+      anchors.top: LevelInfo.bottom
+      anchors.left: SpellName.left
+      anchors.right: parent.right
+      margin-top: 4
+      margin-right: 25
+      font: Verdana Bold-11px
+      color: #c0c0c0
+
+    UILabel
+      id: SoulInfo
+      anchors.top: ManaInfo.bottom
+      anchors.left: SpellName.left
+      anchors.right: parent.right
+      margin-top: 4
+      margin-right: 25
+      font: Verdana Bold-11px
+      color: #c0c0c0
+
+    UILabel
+      id: TypeInfo
+      anchors.top: SoulInfo.bottom
+      anchors.left: SpellName.left
+      anchors.right: parent.right
+      margin-top: 4
+      margin-right: 25
+      font: Verdana Bold-11px
+      color: #c0c0c0

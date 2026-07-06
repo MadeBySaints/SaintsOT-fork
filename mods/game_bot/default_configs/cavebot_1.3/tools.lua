@@ -94,7 +94,7 @@ end, true)
 foodContainer:setHeight(35)
 foodContainer:setItems(storage.dropItems)
 
-macro(5000, "drop items", function()
+macro(10, "drop items", function()
   if not storage.dropItems[1] then return end
   if TargetBot and TargetBot.isActive() then return end -- pause when attacking
   for _, container in pairs(g_game.getContainers()) do
