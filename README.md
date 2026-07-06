@@ -24,6 +24,9 @@ top of upstream:
   replacing the previous minimal placeholder.
   ([`modules/game_cyclopedia/tab/magicalArchives/`](modules/game_cyclopedia/tab/magicalArchives/))
 - Added a custom bestiary creature icon.
+- **Custom cavebot GM/QoL tabs** — Admin (item finder/give), Imbuement Materials stasher, Item Browser, and
+  Status (auto-cure toggles), plus a finished Saved Teleports tool with outfit portraits.
+  ([`mods/game_bot/default_configs/cavebot_1.3/`](mods/game_bot/default_configs/cavebot_1.3/))
 
 Everything below this section is the original upstream OTClient - Redemption README.
 
