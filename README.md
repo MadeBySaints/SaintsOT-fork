@@ -31,6 +31,10 @@ top of upstream:
 - **Custom cavebot GM/QoL tabs** — Admin (item finder/give), Imbuement Materials stasher, Item Browser, and
   Status (auto-cure toggles), plus a finished Saved Teleports tool with outfit portraits.
   ([`mods/game_bot/default_configs/cavebot_1.3/`](mods/game_bot/default_configs/cavebot_1.3/))
+- **Release workflow** — builds the Windows client and publishes it as a downloadable GitHub Release
+  instead of handing out a local build. Runs on pushing a `v*` tag, or manually via
+  [Actions → Release - Windows Client → Run workflow](../../actions/workflows/release-windows.yml).
+  ([`.github/workflows/release-windows.yml`](.github/workflows/release-windows.yml))
 
 Everything below this section is the original upstream OTClient - Redemption README.
 

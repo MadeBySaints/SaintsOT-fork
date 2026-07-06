@@ -1,0 +1,75 @@
+name: Release - Windows Client
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to publish (e.g. v1.0.0). Leave blank to auto-generate one from the date."
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Publish Windows Client
+    runs-on: windows-2025
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Get vcpkg baseline
+        shell: pwsh
+        run: |
+          $json = Get-Content vcpkg.json -Raw | ConvertFrom-Json
+          $vcpkgCommitId = $json.'builtin-baseline'
+          "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+
+      - name: Build (windows-release preset)
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: windows-release
+          buildPreset: windows-release
+          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON', '-DOPTIONS_ENABLE_IPO=OFF', '-DOTCLIENT_BUILD_TESTS=OFF']"
+
+      - name: Package client
+        shell: pwsh
+        run: |
+          $stage = "package/SaintsOT-Client"
+          New-Item -ItemType Directory -Force -Path $stage | Out-Null
+          Copy-Item build/windows-release/bin/otclient.exe $stage/
+          Copy-Item -Recurse data $stage/data
+          Copy-Item -Recurse mods $stage/mods
+          Copy-Item -Recurse modules $stage/modules
+          Copy-Item init.lua, otclientrc.lua, cacert.pem $stage/
+          Compress-Archive -Path $stage -DestinationPath SaintsOT-Client-windows.zip
+
+      - name: Determine release tag
+        id: tag
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "push") {
+            $tag = "${{ github.ref_name }}"
+          } elseif ("${{ github.event.inputs.tag }}") {
+            $tag = "${{ github.event.inputs.tag }}"
+          } else {
+            $tag = "build-$(Get-Date -Format yyyy.MM.dd-HHmm)"
+          }
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: SaintsOT Client ${{ steps.tag.outputs.tag }}
+          files: SaintsOT-Client-windows.zip
+          generate_release_notes: true
