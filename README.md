@@ -10,6 +10,25 @@
 
 ---
 
+## 🏰 SaintsOT Fork
+
+This is the client used by **SaintsOT**, tracking [mehah/otclient](https://github.com/mehah/otclient) (via
+[opentibiabr/otclient](https://github.com/opentibiabr/otclient)) with the following local customizations on
+top of upstream:
+
+- **Cyclopedia Items tab fix** — added a `getItemFromWidget()` helper with fallback lookup strategies
+  (`Sprite:getItem()`, `getChildById`, and an id-based `Item.create` fallback) so item widgets reliably
+  resolve to their `Item` object.
+  ([`modules/game_cyclopedia/tab/items/items.lua`](modules/game_cyclopedia/tab/items/items.lua))
+- **Cyclopedia Magical Archives tab** — added vocation/spell-group filtering and a custom spell list UI,
+  replacing the previous minimal placeholder.
+  ([`modules/game_cyclopedia/tab/magicalArchives/`](modules/game_cyclopedia/tab/magicalArchives/))
+- Added a custom bestiary creature icon.
+
+Everything below this section is the original upstream OTClient - Redemption README.
+
+---
+
 ## <a id="table-of-contents"></a>📋 Table of Contents
 1. ![Logo](https://raw.githubusercontent.com/mehah/otclient/main/src/otcicon.ico)  [What is OTClient?](#what-is-otclient)
 2. 🚀 [Features](#features)
