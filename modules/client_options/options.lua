@@ -197,18 +197,24 @@ local function setup()
     setupComboBox()
 
     -- load options
+    -- classicControl/smartLeftClick/mouseControlMode all cross-write each other's value
+    -- from within their own action handlers, so loading them here (in pairs() order, which
+    -- is not guaranteed/deterministic) can clobber a correctly saved value depending on which
+    -- one happens to be visited first. They're loaded deterministically below instead.
     for k, obj in pairs(options) do
-        local v = obj.value
+        if k ~= 'classicControl' and k ~= 'smartLeftClick' and k ~= 'mouseControlMode' then
+            local v = obj.value
 
-        if type(v) == 'boolean' then
-            local value = g_settings.getBoolean(k)
-            setOption(k, value, true)
-        elseif type(v) == 'number' then
-            local value = g_settings.getNumber(k)
-            setOption(k, value, true)
-        elseif type(v) == 'string' then
-            local value = g_settings.getString(k)
-            setOption(k, value, true)
+            if type(v) == 'boolean' then
+                local value = g_settings.getBoolean(k)
+                setOption(k, value, true)
+            elseif type(v) == 'number' then
+                local value = g_settings.getNumber(k)
+                setOption(k, value, true)
+            elseif type(v) == 'string' then
+                local value = g_settings.getString(k)
+                setOption(k, value, true)
+            end
         end
     end
     
