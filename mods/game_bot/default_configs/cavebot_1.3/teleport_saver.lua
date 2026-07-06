@@ -1,25 +1,23 @@
--- Saved Teleports tool
--- Adds a panel to save your current position (optionally with the monster
--- you're currently attacking/targeting shown as a portrait) and recall it
--- later with a single click, the same way the !pos buttons work.
---
--- Saved entries persist in storage.savedTeleports across reloads/restarts.
-
-importStyle("/teleport_saver.otui")
+-- Saved Teleports tab
+-- Save your current position (optionally with the monster you're currently
+-- attacking/targeting shown as a portrait) and recall it later with one click.
+setDefaultTab("X,Y,Z")
 
 if type(storage.savedTeleports) ~= "table" then
   storage.savedTeleports = {}
 end
 
-UI.Separator()
-UI.Label("Saved Teleports")
+local titleLabel = UI.Label("Save current position")
+titleLabel:setFont("verdana-9px-rounded")
 
 local newTeleportName = UI.TextEdit("", function(widget, text)
   storage.newTeleportName = text
 end)
 newTeleportName:setText(storage.newTeleportName or "")
 
-local teleportList -- forward declare, assigned after refreshList is defined
+local listPanelOuter = UI.createWidget("BotPanel")
+listPanelOuter:setHeight(300)
+local listPanel = listPanelOuter.content
 
 local refreshList
 
@@ -33,10 +31,62 @@ local goToTeleport = function(entry)
 end
 
 refreshList = function()
-  teleportList:destroyChildren()
+  listPanel:destroyChildren()
   for index, entry in ipairs(storage.savedTeleports) do
-    local row = g_ui.createWidget("SavedTeleportEntry", teleportList)
-    row.botWidget = true
+    local rowOtml = [[
+Panel
+  height: 36
+  margin-top: 2
+
+  UICreature
+    id: creature
+    phantom: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    size: 32 32
+    image-source: /images/ui/panel_flat
+    image-border: 1
+
+  Label
+    id: name
+    anchors.left: prev.right
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-left: 6
+    margin-right: 46
+    text-auto-resize: true
+    text-wrap: true
+    height: 16
+
+  Label
+    id: coords
+    anchors.left: prev.left
+    anchors.top: prev.bottom
+    font: verdana-11px-rounded
+    color: #aaaaaa
+    text-auto-resize: true
+    height: 14
+
+  BotButton
+    id: go
+    !text: tr('Go')
+    anchors.top: parent.top
+    anchors.right: parent.right
+    width: 40
+    height: 17
+    margin-top: 0
+
+  BotButton
+    id: remove
+    !text: tr('X')
+    anchors.top: prev.bottom
+    anchors.right: parent.right
+    width: 40
+    height: 17
+    margin-top: 2
+    image-color: #cc4444
+]]
+    local row = setupUI(rowOtml, listPanel)
 
     row.name:setText(entry.name)
     row.coords:setText(string.format("%d, %d, %d", entry.x, entry.y, entry.z))
@@ -50,20 +100,24 @@ refreshList = function()
       end
     end
 
+    row.go:setImageColor("#4caf50") -- green
     row.go.onClick = function()
       goToTeleport(entry)
     end
 
+    row.remove:setImageColor("#f44336") -- red
     row.remove.onClick = function()
       removeTeleport(index)
     end
+
+    UI.Separator(listPanel)
   end
 end
 
 UI.Button("Save Current Position", function()
   local name = storage.newTeleportName
   if not name or name:len() == 0 then
-    displayFailureMessage("Enter a name for the teleport first.")
+    warn("Enter a name for the teleport first.")
     return
   end
 
@@ -95,7 +149,6 @@ UI.Button("Save Current Position", function()
   refreshList()
 end)
 
-teleportList = UI.createWidget("SavedTeleportListPanel")
-teleportList = teleportList.list -- the scrollable inner panel that holds rows
+UI.Separator()
 
 refreshList()
