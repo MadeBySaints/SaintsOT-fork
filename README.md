@@ -10,11 +10,15 @@
 
 ---
 
-## 🏰 SaintsOT Fork
+## 🏰 SaintsOT Fork (Admin Client)
 
 This is the client used by **SaintsOT**, tracking [mehah/otclient](https://github.com/mehah/otclient) (via
 [opentibiabr/otclient](https://github.com/opentibiabr/otclient)) with the following local customizations on
 top of upstream:
+
+> **This is a staff/admin build, not the regular player client.** The cavebot tabs below (Admin item
+> finder/give, Imbuement Materials stasher, Item Browser) let the user spawn and stash any item on demand.
+> Only distribute this build to GMs/staff — ship a build without those tabs to regular players.
 
 - **Cyclopedia Items tab fix** — added a `getItemFromWidget()` helper with fallback lookup strategies
   (`Sprite:getItem()`, `getChildById`, and an id-based `Item.create` fallback) so item widgets reliably
