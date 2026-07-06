@@ -161,7 +161,7 @@
   float: right;
 }
 
-.infoPanel {
+#infoPanel {
   height: 92px;
   text-align: left
 }
@@ -214,12 +214,16 @@
   --text-auto-resize: true;
 }
 .close-button {
+  width: 50px;
+  height: 20px;
   margin-left: 5px;
   float: right;
   text-align: center;
   vertical-align: center;
 }
 .history-button {
+  width: 60px;
+  height: 20px;
   float: right;
   margin-right: 10px;
 }
