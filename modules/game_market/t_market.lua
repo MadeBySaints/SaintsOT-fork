@@ -617,6 +617,26 @@ function onMarketEnter(items, offerCount, balance, vocation)
     configureList()
     depotLockerItems = items
 
+    -- amountCreateScrollBar's range is only ever (re)computed inside
+    -- onPiecePriceEdit (triggered by typing a price), never when an item is
+    -- selected or when fresher depot/stash counts arrive from the server. If
+    -- the player types a price before this update lands (e.g. right after
+    -- selecting an item, while the browseMarket round-trip is still in
+    -- flight), the range silently stays pinned to whatever stale count was
+    -- cached at that moment. Re-sync just the range here (not the full
+    -- onPiecePriceEdit, which also rewrites the price TextEdit's own text and
+    -- can re-trigger its @onTextChange handler mid-interaction).
+    if currentActionType == 1 and not table.empty(lastSelectedItem) then
+        local isTibiaCoin = lastSelectedItem.itemId == 22118
+        local itemCount = isTibiaCoin and getTransferableTibiaCoins() or
+                              getDepotItemCount(lastSelectedItem.itemId, lastSelectedItem.tier or 0)
+        local thing = g_things.getThingType(lastSelectedItem.itemId, ThingCategoryItem)
+        local maxCount = thing:isStackable() and 64000 or 2000
+        if itemCount > 0 and not (isTibiaCoin and itemCount < 25) then
+            mainMarket.amountCreateScrollBar:setRange((isTibiaCoin and 25 or 1), math.min(maxCount, itemCount))
+        end
+    end
+
     if marketWindow:isVisible() then
         return
     end
@@ -1806,7 +1826,8 @@ function createMarketOffer()
     end
 
     local n = mainMarket.createOfferAmount:getText()
-    local amount = tonumber(n:gsub("%D", ""))
+    local amountDigits = n:gsub("%D", "")
+    local amount = tonumber(amountDigits)
     local piecePrice = tonumber(mainMarket.grossAmount.value)
 
     if not amount or not piecePrice then
