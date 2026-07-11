@@ -1,6 +1,7 @@
 -- Auxiliar miniWindows
 local acceptWindow = nil
 local changeNameWindow = nil
+local hirelingCreateWindow = nil
 local transferPointsWindow = nil
 local processingWindow = nil
 local messageBox = nil
@@ -523,11 +524,11 @@ function controllerShop:onGameEnd()
         controllerShop.ui:hide()
     end
 
-    destroyWindow({transferPointsWindow, changeNameWindow, acceptWindow, processingWindow,messageBox})
+    destroyWindow({transferPointsWindow, changeNameWindow, hirelingCreateWindow, acceptWindow, processingWindow,messageBox})
 end
 
 function controllerShop:onTerminate()
-    destroyWindow({transferPointsWindow, changeNameWindow, acceptWindow, processingWindow,messageBox})
+    destroyWindow({transferPointsWindow, changeNameWindow, hirelingCreateWindow, acceptWindow, processingWindow,messageBox})
 end
 
 -- /*=============================================
@@ -1064,12 +1065,19 @@ function chooseOffert(self, focusedChild)
                 destroyWindow(acceptWindow)
             end
 
-            if product.configurable or product.name == "Character Name Change" then
-                return displayChangeName(offer)
+            -- Must be checked before the generic `product.configurable`
+            -- branch below: the server marks OFFER_TYPE_HIRELING offers as
+            -- configurable too (see useOfferConfigure in canary's
+            -- helpers.lua), so without this ordering the Hireling
+            -- Apprentice offer would always fall into displayChangeName
+            -- (a plain name-only dialog, no sex picker) and never reach
+            -- the dialog actually built for it below.
+            if product.name == "Hireling Apprentice" then
+                return displayCreateHireling(offer)
             end
 
-            if product.name == "Hireling Apprentice" then
-                return displayErrorBox(controllerShop.ui:getText(), "not yet, UI missing")
+            if product.configurable or product.name == "Character Name Change" then
+                return displayChangeName(offer)
             end
 
             local function acceptFunc()
@@ -1192,6 +1200,55 @@ function displayChangeName(offer)
     changeNameWindow.onEscape = function()
         destroyWindow(changeNameWindow)
     end
+end
+
+-- /*=============================================
+-- =            Behavior  Create Hireling        =
+-- =============================================*/
+
+function displayCreateHireling(offer)
+    controllerShop.ui:hide()
+    destroyWindow(hirelingCreateWindow)
+    hirelingCreateWindow = g_ui.displayUI('style/hireling_create')
+    hirelingCreateWindow:show()
+
+    local nameText = hirelingCreateWindow:getChildById('hirelingNameText')
+    local maleButton = hirelingCreateWindow:getChildById('maleButton')
+    local femaleButton = hirelingCreateWindow:getChildById('femaleButton')
+    nameText:setText('')
+    maleButton:setChecked(true)
+    femaleButton:setChecked(false)
+
+    maleButton.onClick = function()
+        maleButton:setChecked(true)
+        femaleButton:setChecked(false)
+    end
+    femaleButton.onClick = function()
+        femaleButton:setChecked(true)
+        maleButton:setChecked(false)
+    end
+
+    local function closeWindow()
+        nameText:setText('')
+        hirelingCreateWindow:setVisible(false)
+    end
+    hirelingCreateWindow.closeButton.onClick = closeWindow
+    hirelingCreateWindow.buttonOk.onClick = function()
+        if nameText:getText():len() == 0 then
+            return
+        end
+        -- PLAYERSEX_FEMALE = 0, PLAYERSEX_MALE = 1 (canary src/creatures/creatures_definitions.hpp)
+        local sex = femaleButton:isChecked() and 0 or 1
+        g_game.buyStoreOffer(offer.id, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_HIRELING, nameText:getText(), sex)
+        closeWindow()
+    end
+    hirelingCreateWindow.onEscape = function()
+        destroyWindow(hirelingCreateWindow)
+    end
+end
+
+function hirelingCreateCancel()
+    destroyWindow(hirelingCreateWindow)
 end
 
 -- /*=============================================

@@ -1,0 +1,95 @@
+StoreWindow
+  id: hirelingCreateWindow
+  size: 359 156
+  padding: 3
+  visible: false
+  @onEscape: hirelingCreateCancel()
+
+  Label
+    id: hirelingCreateLabel
+    !text: tr('Create Hireling')
+    text-align: center
+    font: verdana-11px-antialised
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 20
+
+  Label
+    id: descriptionText
+    !text: tr('Please enter a name and choose a sex for your new hireling:')
+    text-wrap: true
+    text-auto-resize: true
+    anchors.top: hirelingCreateLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin: 7
+
+  TextEdit
+    id: hirelingNameText
+    size: 150 16
+    anchors.top: descriptionText.bottom
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin: 7
+    margin-right: 13
+    text-align: left
+    text-offset: -18 0
+
+  StoreButton
+    id: maleButton
+    anchors.top: hirelingNameText.bottom
+    anchors.left: parent.left
+    margin-top: 7
+    margin-left: 7
+    !text: tr('Male')
+    font: cipsoftFont
+    size: 80 20
+    color: #ffffff
+
+  StoreButton
+    id: femaleButton
+    anchors.top: hirelingNameText.bottom
+    anchors.left: maleButton.right
+    margin-top: 7
+    margin-left: 6
+    !text: tr('Female')
+    font: cipsoftFont
+    size: 80 20
+    color: #ffffff
+
+  Label
+    height: 38
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+
+  HorizontalSeparator
+    anchors.left: parent.left
+    margin-left: 5
+    anchors.right: parent.right
+    margin-right: 12
+    anchors.top: closeButton.top
+    margin-top: -14
+
+  StoreButton
+    id: closeButton
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 12
+    margin-bottom: 7
+    !text: tr('Cancel')
+    font: cipsoftFont
+    size: 43 20
+    color: #ffffff
+
+  StoreButton
+    id: buttonOk
+    anchors.right: closeButton.left
+    anchors.bottom: parent.bottom
+    margin-right: 10
+    margin-bottom: 7
+    !text: tr('Ok')
+    font: cipsoftFont
+    size: 43 20
+    color: #ffffff
